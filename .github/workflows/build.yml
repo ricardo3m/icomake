@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -24,10 +26,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: icomake-win32
-          path: Release\icomake.exe
+          path: Release/icomake.exe
 
       - name: Upload x64 executable
         uses: actions/upload-artifact@v4
         with:
           name: icomake-x64
-          path: x64\Release\icomake.exe
+          path: x64/Release/icomake.exe
