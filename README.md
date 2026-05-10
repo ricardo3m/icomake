@@ -8,7 +8,7 @@ Command line:
 
 Input file formats supported:
 * Any existing ICO containing either uncompressed bitmaps (BMPs) or PNGs
-* 32-bit PNGs (with alpha channel) up to 256×256 pixels in size.
+* 32-bit PNGs (with alpha channel) of any size.
 
 Outputs single ICO file containing all input images.
 
