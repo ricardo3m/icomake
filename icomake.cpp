@@ -137,7 +137,7 @@ int main (int argc, char ** argv) {
 
                         std::printf (" %ux%ux%u", width, height, header [24] * 4);
 
-                        if (header [25] == 6) {
+                        if (header [25] == 6) { // color type 6 = RGBA (true color with alpha)
 
                             std::fseek (f, 0, SEEK_END);
 
