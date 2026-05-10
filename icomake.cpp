@@ -2,6 +2,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
+#include <cwchar>
 #include <cwctype>
 #include <map>
 
