@@ -137,10 +137,7 @@ int main (int argc, char ** argv) {
 
                         std::printf (" %ux%ux%u", width, height, header [24] * 4);
 
-                        if (width > 256 || height > 256) {
-                            std::printf (": unsupported, dimensions exceed 256x256");
-                            msg = false;
-                        } else if (header [25] == 6) {
+                        if (header [25] == 6) {
 
                             std::fseek (f, 0, SEEK_END);
 
