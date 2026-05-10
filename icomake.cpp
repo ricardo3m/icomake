@@ -33,8 +33,8 @@ struct IcoEntry {
 };
 
 struct key {
-    unsigned int width; // 1 - 256
-    unsigned int height; // 1 - 256
+    unsigned int width;
+    unsigned int height;
     unsigned int bpp; // 1,2,4,8,24,32
 
     unsigned long weight () const {
@@ -78,8 +78,8 @@ struct key {
         return this->weight () < other.weight ();
     }
     void apply (IcoEntry * entry) const {
-        entry->width = (std::uint8_t) ((this->width == 256) ? 0 : this->width);
-        entry->height = (std::uint8_t) ((this->height == 256) ? 0 : this->height);
+        entry->width = (std::uint8_t) ((this->width >= 256) ? 0 : this->width);
+        entry->height = (std::uint8_t) ((this->height >= 256) ? 0 : this->height);
         entry->bpp = (std::uint16_t) this->bpp;
     }
 };
@@ -137,16 +137,11 @@ int main (int argc, char ** argv) {
                         std::printf (" %ux%ux%u", width, height, header [24] * 4);
 
                         if (header [25] == 6) {
-                            if ((width <= 256) && (height <= 256)) {
 
-                                std::fseek (f, 0, SEEK_END);
+                            std::fseek (f, 0, SEEK_END);
 
-                                data [{width, height, 32}] = { f, *source, (std::uint32_t) std::ftell (f), 0 };
-                                ok = true;
-                            } else {
-                                std::printf (": image too big, max 256x256");
-                                msg = false;
-                            }
+                            data [{width, height, 32}] = { f, *source, (std::uint32_t) std::ftell (f), 0 };
+                            ok = true;
                         } else {
                             std::printf (": unsupported, use only true color PNGs");
                             msg = false;
