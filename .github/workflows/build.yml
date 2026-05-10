@@ -1,0 +1,33 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build Release|Win32
+        run: msbuild icomake.sln /p:Configuration=Release /p:Platform=Win32
+
+      - name: Build Release|x64
+        run: msbuild icomake.sln /p:Configuration=Release /p:Platform=x64
+
+      - name: Upload Win32 executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: icomake-win32
+          path: Release\icomake.exe
+
+      - name: Upload x64 executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: icomake-x64
+          path: x64\Release\icomake.exe
