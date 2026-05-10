@@ -16,8 +16,8 @@ jobs:
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build Release|Win32
-        run: msbuild icomake.sln /p:Configuration=Release /p:Platform=Win32
+      - name: Build Release|x86
+        run: msbuild icomake.sln /p:Configuration=Release /p:Platform=x86
 
       - name: Build Release|x64
         run: msbuild icomake.sln /p:Configuration=Release /p:Platform=x64
