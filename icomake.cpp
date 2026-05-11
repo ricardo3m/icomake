@@ -40,42 +40,21 @@ struct key {
     unsigned int bpp; // 1,2,4,8,24,32
 
     unsigned long weight () const {
-        
-        // optimized order for modern systems
-        //  - mostly everything now uses 32bpp so put those first, then 24, 8, etc.
-        //  - Windows iterates over all icons, searching for best match of them all, stopping only on exact match
-        //  - BUT keep 16,32,48 sizes at 4,8,32 bpp among first 9 for XP and earlier (these should NOT be PNGs)
 
+        // sort from largest to smallest: bigger icons come first, 32bpp most common so placed first within same size
+
+        auto area = this->width * this->height;
+        unsigned long bpp_order;
         switch (this->bpp) {
-            case 32:
-                if (this->width == 48 && this->height == 48) return 11;
-                if (this->width == 32 && this->height == 32) return 12;
-                if (this->width == 16 && this->height == 16) return 13;
-                if (this->width == 24 && this->height == 24) return 91;
-                break;
-            case 8:
-                if (this->width == 48 && this->height == 48) return 21;
-                if (this->width == 32 && this->height == 32) return 22;
-                if (this->width == 16 && this->height == 16) return 23;
-                if (this->width == 24 && this->height == 24) return 92;
-                break;
-            case 4:
-                if (this->width == 48 && this->height == 48) return 31;
-                if (this->width == 32 && this->height == 32) return 32;
-                if (this->width == 16 && this->height == 16) return 33;
-                if (this->width == 24 && this->height == 24) return 93;
-                break;
-            case 24:
-                if (this->width == 48 && this->height == 48) return 41;
-                if (this->width == 32 && this->height == 32) return 42;
-                if (this->width == 16 && this->height == 16) return 43;
-                if (this->width == 24 && this->height == 24) return 94;
-                break;
+            case 32: bpp_order = 0; break;
+            case 24: bpp_order = 1; break;
+            case  8: bpp_order = 2; break;
+            case  4: bpp_order = 3; break;
+            default: bpp_order = 4; break;
         }
-        auto sum = (this->width + this->height) & 0xFFFFu;
-        return (sum << 8)
-            | (this->height & 0xFFu)
-            | ((32 - this->bpp) << 24);
+        // cap area at 256x256 so size_order never underflows; larger area -> smaller weight -> comes first
+        unsigned long size_order = (area <= 0x10000u) ? (0x10000u - area) : 0u;
+        return (size_order << 4) | bpp_order;
     }
     bool operator < (const key & other) const {
         return this->weight () < other.weight ();
