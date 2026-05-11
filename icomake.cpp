@@ -41,7 +41,7 @@ struct key {
 
     unsigned long weight () const {
 
-        // sort from largest to smallest: bigger icons come first, 32bpp most common so placed first within same size
+        // sort from smallest to largest: smaller/lower-quality icons first, highest resolution last (default)
 
         auto area = this->width * this->height;
         unsigned long bpp_order;
@@ -52,12 +52,12 @@ struct key {
             case  4: bpp_order = 3; break;
             default: bpp_order = 4; break;
         }
-        // cap area at 256x256 so size_order never underflows; larger area -> smaller weight -> comes first
+        // cap area at 256x256 so size_order never underflows; larger area -> smaller weight -> comes last (as default)
         unsigned long size_order = (area <= 0x10000u) ? (0x10000u - area) : 0u;
         return (size_order << 4) | bpp_order;
     }
     bool operator < (const key & other) const {
-        return this->weight () < other.weight ();
+        return this->weight () > other.weight ();
     }
     void apply (IcoEntry * entry) const {
         entry->width = (std::uint8_t) ((this->width >= 256) ? 0 : this->width);
