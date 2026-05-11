@@ -41,7 +41,7 @@ struct key {
 
     unsigned long weight () const {
 
-        // sort from smallest to largest: smaller/lower-quality icons first, highest resolution last (default)
+        // sort from largest to smallest: highest resolution first (default for Windows Photos), smallest/lower-quality icons last
 
         auto area = this->width * this->height;
         unsigned long bpp_order;
@@ -57,7 +57,7 @@ struct key {
         return (size_order << 4) | bpp_order;
     }
     bool operator < (const key & other) const {
-        return this->weight () > other.weight ();
+        return this->weight () < other.weight ();
     }
     void apply (IcoEntry * entry) const {
         entry->width = (std::uint8_t) ((this->width >= 256) ? 0 : this->width);
