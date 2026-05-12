@@ -41,19 +41,19 @@ struct key {
 
     unsigned long weight () const {
 
-        // sort from largest to smallest: highest resolution first (default for Windows Photos), smallest/lower-quality icons last
+        // sort from smallest to largest: smallest/lower-quality icons first, highest resolution last (default for Windows Photos)
 
         auto area = this->width * this->height;
         unsigned long bpp_order;
         switch (this->bpp) {
-            case 32: bpp_order = 0; break;
-            case 24: bpp_order = 1; break;
+            case 32: bpp_order = 4; break;
+            case 24: bpp_order = 3; break;
             case  8: bpp_order = 2; break;
-            case  4: bpp_order = 3; break;
-            default: bpp_order = 4; break;
+            case  4: bpp_order = 1; break;
+            default: bpp_order = 0; break;
         }
-        // cap area at 256x256 so size_order never underflows; larger area -> smaller weight -> comes last (as default)
-        unsigned long size_order = (area <= 0x10000u) ? (0x10000u - area) : 0u;
+        // cap area at 256x256 not needed; larger area -> larger weight -> comes last (as default)
+        unsigned long size_order = area;
         return (size_order << 4) | bpp_order;
     }
     bool operator < (const key & other) const {

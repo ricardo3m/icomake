@@ -24,28 +24,14 @@ Windows Vista and later supports ICO files that contain PNG sub-images. Most gra
 
 Windows icon loader iterates over all icons in file, assessing difference between requested and available icons, stopping only on exact match. The assessment is in both resolution and color depth, preferring resolution over color depth; only to a certain degree though.
 
-In attempt to save it a few cycles and trigger the early return on match, this tool places the most probable icons first. It also honors Microsoft's guidelines for XP software by placing the most common 9 icon sizes first. If all resolutions were available, the order would be following:
+This tool orders sub-images from smallest to largest, with the highest quality image (256×256×32) placed last. Windows Photos (and WIC-based viewers) display the last frame of an ICO file by default, so this ensures the full-resolution image is shown when opening the file in Windows Photos.
 
-1. 48×48×32
-1. 32×32×32
-1. 16×16×32
-1. 48×48×8
-1. 32×32×8
-1. 16×16×8
-1. 48×48×4
-1. 32×32×4
-1. 16×16×4
-1. 48×48×24
-1. 32×32×24
-1. 16×16×24
-1. 24×24×32
-1. 24×24×8
-1. 24×24×4
-1. 24×24×24
-1. ?×?×32 (from smallest to largest)
-1. ?×?×24 (from smallest to largest)
-1. ?×?×8 (from smallest to largest)
-1. ?×?×4 (from smallest to largest)
+If all resolutions were available, the order would be following (from first to last):
+
 1. ?×?×1 (from smallest to largest)
+1. ?×?×4 (from smallest to largest)
+1. ?×?×8 (from smallest to largest)
+1. ?×?×24 (from smallest to largest)
+1. ?×?×32 (from smallest to largest, with 256×256×32 last)
 
 *Of course, whether this is the best order is open for a debate.*
