@@ -39,25 +39,31 @@ struct key {
     unsigned int height;
     unsigned int bpp; // 1,2,4,8,24,32
 
-    unsigned long weight () const {
+    bool operator < (const key & other) const {
 
         // sort from largest to smallest: highest resolution first (default for Windows Photos), smallest/lower-quality icons last
 
-        auto area = this->width * this->height;
-        unsigned long bpp_order;
-        switch (this->bpp) {
-            case 32: bpp_order = 0; break;
-            case 24: bpp_order = 1; break;
-            case  8: bpp_order = 2; break;
-            case  4: bpp_order = 3; break;
-            default: bpp_order = 4; break;
-        }
-        // cap area at 256x256 so size_order never underflows; larger area -> smaller weight -> comes last (as default)
-        unsigned long size_order = (area <= 0x10000u) ? (0x10000u - area) : 0u;
-        return (size_order << 4) | bpp_order;
-    }
-    bool operator < (const key & other) const {
-        return this->weight () < other.weight ();
+        auto area_a = this->width * this->height;
+        auto area_b = other.width * other.height;
+        if (area_a != area_b)
+            return area_a > area_b; // larger area first
+
+        if (this->width != other.width)
+            return this->width > other.width; // wider first
+
+        unsigned int bpp_order_a, bpp_order_b;
+        auto bpp_rank = [] (unsigned int bpp) -> unsigned int {
+            switch (bpp) {
+                case 32: return 0;
+                case 24: return 1;
+                case  8: return 2;
+                case  4: return 3;
+                default: return 4;
+            }
+        };
+        bpp_order_a = bpp_rank (this->bpp);
+        bpp_order_b = bpp_rank (other.bpp);
+        return bpp_order_a < bpp_order_b; // higher bpp first
     }
     void apply (IcoEntry * entry) const {
         entry->width = (std::uint8_t) ((this->width >= 256) ? 0 : this->width);
